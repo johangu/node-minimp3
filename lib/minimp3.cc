@@ -10,8 +10,8 @@ Napi::Value DecodeBuffer(const Napi::CallbackInfo &info) {
   mp3dec_file_info_t f_info;
 
   mp3dec_load_buf(&mp3d, buf, buf_size, &f_info, 0, 0);
-  return Napi::Buffer<mp3d_sample_t>::New(info.Env(), f_info.buffer,
-                                          f_info.samples);
+  return Napi::Buffer<mp3d_sample_t>::New(
+      info.Env(), f_info.buffer, f_info.samples - sizeof(mp3d_sample_t));
 }
 
 Napi::Object Init(Napi::Env env, Napi::Object exports) {
