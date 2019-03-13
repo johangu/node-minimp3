@@ -19,13 +19,13 @@ $ npm i minimp3
 This is an example of how to decode an mp3-file and pipe the output to `node-speaker` ([TooTallNate/node-speaker](https://www.github.com/TooTallNate/node-speaker))
 
 ``` javascript
-const { Decoder } = require('minimp3')
+const Decoder = require('minimp3')
 const Speaker = require('speaker')
 const { createReadStream } = require('fs')
 
 const decoder = new Decoder()
 const speaker = new Speaker()
-const fileStream = createReadStream('/path/to/my/file.mp')
+const fileStream = createReadStream('/path/to/my/file.mp3')
 fileStream.pipe(decoder).pipe(speaker)
 ```
 
