@@ -138,9 +138,9 @@ The audio is 16-bit signed little-endian PCM, with the channels interleaved
 - **Gapless:** if the file has a Xing/Info/LAME tag, which most encoders write, the
   encoder delay and padding are removed, so the output is exactly as long as the
   original audio. Files without one are decoded as is.
-- **Tags:** an ID3v2 tag at the start and ID3v1 or APEv2 tags at the end are
-  skipped. Anything else that is not an MP3 frame, such as junk before the first
-  frame, is skipped as well.
+- **Tags:** an ID3v2 tag at the start and an ID3v1 tag at the end are skipped.
+  Anything else that is not an MP3 frame, such as junk before the first frame, is
+  skipped as well.
 - **Partial frames:** the stream keeps whatever it needs from one chunk to the
   next, so it does not matter where the chunk boundaries fall. Data that ends in
   the middle of a frame decodes up to the last complete frame.

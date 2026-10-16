@@ -23,6 +23,7 @@
     "index.d.cts",
     "index.d.mts",
     "binding.gyp",
+    "CHANGELOG.md",
     "lib/minimp3.cc",
     "lib/minimp3.h",
     "lib/minimp3_ex.h",
