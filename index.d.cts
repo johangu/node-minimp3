@@ -29,15 +29,13 @@ declare class Decoder extends Transform {
 }
 
 declare namespace Decoder {
-  /** Describes the PCM output. Matches the options of node-speaker. */
+  /** Describes the PCM output: interleaved signed little-endian integers. */
   interface Format {
     /** Samples per second per channel, e.g. 44100. */
     sampleRate: number
     /** 1 for mono, 2 for stereo. Samples are interleaved. */
     channels: number
     bitDepth: 16
-    /** Samples are signed little-endian integers. */
-    signed: true
   }
 
   interface DecodeResult {

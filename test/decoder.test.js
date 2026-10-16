@@ -147,8 +147,7 @@ for (const fixture of fixtures) {
       assert.deepEqual(events[0], ['format', {
         sampleRate: fixture.sampleRate,
         channels: fixture.channels,
-        bitDepth: 16,
-        signed: true
+        bitDepth: 16
       }])
       assert.equal(events.filter(e => e[0] === 'format').length, 1)
       assert.deepEqual(decoder.format, events[0][1])

@@ -4,10 +4,10 @@ const binding = require('bindings')('minimp3')
 
 const debug = debuglog('minimp3')
 
-// Same shape as the options of node-speaker
+// The output is always 16-bit signed little-endian PCM
 function formatOf (decoder) {
   const format = decoder.format
-  return format && { ...format, bitDepth: 16, signed: true }
+  return format && { ...format, bitDepth: 16 }
 }
 
 class Decoder extends Transform {

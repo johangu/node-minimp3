@@ -10,8 +10,7 @@ decoder.on('format', format => {
   const rate: number = format.sampleRate
   const channels: number = format.channels
   const depth: 16 = format.bitDepth
-  const signed: true = format.signed
-  console.log(rate, channels, depth, signed)
+  console.log(rate, channels, depth)
 })
 decoder.on('data', (chunk: Buffer) => chunk.length)
 
