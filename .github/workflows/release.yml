@@ -26,7 +26,7 @@ jobs:
           - { target: linux-x64, os: ubuntu-latest }
           - { target: linux-arm64, os: ubuntu-24.04-arm }
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       # Without scripts, so that the tests below load the prebuilt binary
       - run: npm ci --ignore-scripts
       - run: npm run prebuildify
@@ -36,7 +36,7 @@ jobs:
           highest=$(objdump -T prebuilds/${{ matrix.target }}/*.node | grep -oE 'GLIBC_[0-9.]+' | sort -Vu | tail -n 1)
           echo "requires $highest"
           test "$(printf '%s\n' "$highest" GLIBC_2.28 | sort -V | tail -n 1)" = GLIBC_2.28
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: prebuilds-${{ matrix.target }}
           path: prebuilds/
@@ -53,14 +53,14 @@ jobs:
           - { target: darwin-x64, os: macos-15-intel }
           - { target: win32-x64, os: windows-latest }
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
       - run: npm ci --ignore-scripts
       - run: npm run prebuildify
       - run: npm test
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: prebuilds-${{ matrix.target }}
           path: prebuilds/
@@ -78,11 +78,11 @@ jobs:
         os: [ubuntu-latest, ubuntu-24.04-arm, macos-latest, macos-15-intel, windows-latest]
         node: [22, 26]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: prebuilds-*
           path: prebuilds/
@@ -99,14 +99,14 @@ jobs:
       contents: read
       id-token: write # npm trusted publishing and provenance
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: 24
           registry-url: https://registry.npmjs.org
       - name: The tag matches the version in package.json
         run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v8
         with:
           pattern: prebuilds-*
           path: prebuilds/
