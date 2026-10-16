@@ -1,6 +1,6 @@
 const { Transform } = require('node:stream')
 const { debuglog } = require('node:util')
-const binding = require('bindings')('minimp3')
+const binding = require('node-gyp-build')(__dirname)
 
 const debug = debuglog('minimp3')
 

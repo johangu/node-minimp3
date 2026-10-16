@@ -16,6 +16,21 @@ a buffer in memory.
 npm install minimp3
 ```
 
+Requires Node.js 22 or later.
+
+Prebuilt binaries are included for:
+
+| OS      | Architectures |
+| ------- | ------------- |
+| macOS   | arm64, x64    |
+| Linux (glibc) | x64, arm64 |
+| Windows | x64           |
+
+On these, nothing is compiled during installation, and it works with
+`--ignore-scripts`. On any other platform, such as Alpine Linux (musl), the addon
+is compiled from the bundled source when you install, which needs Python 3, make
+and a C++ compiler (on Alpine: `apk add python3 make g++`).
+
 ## Usage
 
 ### Decoding a stream
