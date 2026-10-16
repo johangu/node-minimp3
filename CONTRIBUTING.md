@@ -9,6 +9,7 @@ Studio Build Tools on Windows).
 ```sh
 npm install            # installs and compiles the addon from source
 npm run build          # recompile after changing lib/minimp3.cc
+npm run lint           # code style ("standard", through neostandard); lint:fix repairs most of it
 npm test               # unit tests (node:test)
 npm run test:coverage  # the same, with coverage of the JavaScript
 npm run test:types     # type-checks the typings with CommonJS and ESM consumers

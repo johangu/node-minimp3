@@ -6,7 +6,8 @@
 //
 //   --yes          do not ask for confirmation
 //   --dry-run      run the checks and show what would happen, change nothing
-//   --skip-tests   do not run the tests first (CI still runs them before publishing)
+//   --skip-tests   do not run the linter and the tests first (CI still runs the
+//                  tests before publishing)
 //
 // It is not called `publish` because npm runs a script of that name by itself
 // after every `npm publish`.
@@ -97,6 +98,7 @@ async function main () {
 
   if (!flags.includes('--skip-tests')) {
     console.log('Running the tests...')
+    if (!run('npm', ['run', 'lint'], { inherit: true }).ok) fail('the linter reports problems')
     if (!run('npm', ['test'], { inherit: true }).ok) fail('the tests fail')
     if (!run('npm', ['run', 'test:types'], { inherit: true }).ok) fail('the type check fails')
   }
