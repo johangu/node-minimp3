@@ -4,6 +4,12 @@ const binding = require('bindings')('minimp3')
 
 const debug = debuglog('minimp3')
 
+// Same shape as the options of node-speaker
+function formatOf (decoder) {
+  const format = decoder.format
+  return format && { ...format, bitDepth: 16, signed: true }
+}
+
 class Decoder extends Transform {
   constructor (options) {
     super({ ...options, objectMode: false })
@@ -11,13 +17,24 @@ class Decoder extends Transform {
     this.format = null
   }
 
+  // Decodes a complete MP3 held in memory. Throws if it cannot be decoded.
+  // `format` is null if no MP3 frames were found.
+  static decodeSync (input) {
+    if (!ArrayBuffer.isView(input)) {
+      throw new TypeError('Expected a Buffer or Uint8Array')
+    }
+    const buffer = Buffer.from(input.buffer, input.byteOffset, input.byteLength)
+    const decoder = new binding.Decoder()
+    const first = decoder.write(buffer)
+    const rest = decoder.flush()
+    return { format: formatOf(decoder), pcm: Buffer.concat([first, rest]) }
+  }
+
   // Called once the first frame has been read, before any PCM is pushed.
   _updateFormat () {
     if (this.format) return
-    const format = this._decoder.format
-    if (!format) return
-    // Same shape as the options of node-speaker
-    this.format = { ...format, bitDepth: 16, signed: true }
+    this.format = formatOf(this._decoder)
+    if (!this.format) return
     debug('format: %o', this.format)
     this.emit('format', this.format)
   }
@@ -43,5 +60,8 @@ class Decoder extends Transform {
     this._decode('flush', null, callback)
   }
 }
+
+// Lets `const { Decoder } = require('minimp3')` work next to the default export
+Decoder.Decoder = Decoder
 
 module.exports = Decoder

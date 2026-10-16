@@ -3,9 +3,24 @@
   "version": "1.0.0",
   "description": "Native binding for minimp3",
   "main": "index.js",
+  "types": "index.d.cts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./index.d.mts",
+        "default": "./index.mjs"
+      },
+      "require": {
+        "types": "./index.d.cts",
+        "default": "./index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
   "scripts": {
-    "test": "node --test",
-    "test:coverage": "node --test --experimental-test-coverage"
+    "test": "node --test test/*.test.js",
+    "test:coverage": "node --test --experimental-test-coverage test/*.test.js",
+    "test:types": "tsc -p test/types"
   },
   "repository": {
     "type": "git",
@@ -28,6 +43,7 @@
     "node-addon-api": "^8.9.2"
   },
   "devDependencies": {
+    "@types/node": "^26.6.5",
     "debug": "^4.1.1",
     "eslint": "^5.15.1",
     "eslint-config-standard": "^12.0.0",
@@ -35,6 +51,7 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "prettier-eslint-cli": "^4.7.1"
+    "prettier-eslint-cli": "^4.7.1",
+    "typescript": "^7.0.2"
   }
 }
