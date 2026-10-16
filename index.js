@@ -1,23 +1,67 @@
-const minimp3 = require('bindings')('minimp3')
-const { Transform } = require('stream')
-const debug = require('debug')('minimp3')
+const { Transform } = require('node:stream')
+const { debuglog } = require('node:util')
+const binding = require('node-gyp-build')(__dirname)
+
+const debug = debuglog('minimp3')
+
+// The output is always 16-bit signed little-endian PCM
+function formatOf (decoder) {
+  const format = decoder.format
+  return format && { ...format, bitDepth: 16 }
+}
 
 class Decoder extends Transform {
-  constructor (opts) {
-    debug('Constructor')
-    super()
+  constructor (options) {
+    super({ ...options, objectMode: false })
+    this._decoder = new binding.Decoder()
+    this.format = null
   }
 
-  _transform (chunk, encoding, processed) {
-    debug(`_transform(): (${chunk.length} bytes)`)
+  // Decodes a complete MP3 held in memory. Throws if it cannot be decoded.
+  // `format` is null if no MP3 frames were found.
+  static decodeSync (input) {
+    if (!ArrayBuffer.isView(input)) {
+      throw new TypeError('Expected a Buffer or Uint8Array')
+    }
+    const buffer = Buffer.from(input.buffer, input.byteOffset, input.byteLength)
+    const decoder = new binding.Decoder()
+    const first = decoder.write(buffer)
+    const rest = decoder.flush()
+    return { format: formatOf(decoder), pcm: Buffer.concat([first, rest]) }
+  }
 
-    const decodedBuffer = minimp3.decodeBuffer(chunk, chunk.length)
-    debug(`decodedBuffer.length: ${decodedBuffer.length}`)
+  // Called once the first frame has been read, before any PCM is pushed.
+  _updateFormat () {
+    if (this.format) return
+    this.format = formatOf(this._decoder)
+    if (!this.format) return
+    debug('format: %o', this.format)
+    this.emit('format', this.format)
+  }
 
-    if (decodedBuffer.length > 0) this.push(decodedBuffer)
+  _decode (method, chunk, callback) {
+    let pcm
+    try {
+      pcm = method === 'write' ? this._decoder.write(chunk) : this._decoder.flush()
+    } catch (err) {
+      return callback(err)
+    }
+    this._updateFormat()
+    debug('%s: %d bytes in, %d bytes out', method, chunk ? chunk.length : 0, pcm.length)
+    if (pcm.length > 0) this.push(pcm)
+    callback()
+  }
 
-    processed()
+  _transform (chunk, encoding, callback) {
+    this._decode('write', chunk, callback)
+  }
+
+  _flush (callback) {
+    this._decode('flush', null, callback)
   }
 }
+
+// Lets `const { Decoder } = require('minimp3')` work next to the default export
+Decoder.Decoder = Decoder
 
 module.exports = Decoder

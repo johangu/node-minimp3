@@ -1,10 +1,50 @@
 {
   "name": "minimp3",
   "version": "1.0.0",
-  "description": "Native binding for minimp3",
+  "description": "MP3 decoder for Node.js: native bindings for minimp3, as a stream or from a buffer",
   "main": "index.js",
+  "types": "index.d.cts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./index.d.mts",
+        "default": "./index.mjs"
+      },
+      "require": {
+        "types": "./index.d.cts",
+        "default": "./index.js"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "index.mjs",
+    "index.d.cts",
+    "index.d.mts",
+    "binding.gyp",
+    "CHANGELOG.md",
+    "lib/minimp3.cc",
+    "lib/minimp3.h",
+    "lib/minimp3_ex.h",
+    "lib/UPSTREAM.md",
+    "prebuilds"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install": "node-gyp-build",
+    "build": "node-gyp rebuild",
+    "prebuildify": "prebuildify --napi --strip --tag-libc",
+    "prepublishOnly": "node scripts/check-prebuilds.js",
+    "lint": "eslint",
+    "lint:fix": "eslint --fix",
+    "test": "node --test test/*.test.js",
+    "test:coverage": "node --test --experimental-test-coverage test/*.test.js",
+    "test:types": "tsc -p test/types",
+    "test:install": "node scripts/smoke-install.js",
+    "release": "node scripts/release.js"
   },
   "repository": {
     "type": "git",
@@ -14,26 +54,26 @@
     "mp3",
     "decoder",
     "minimp3",
-    "audio"
+    "audio",
+    "pcm",
+    "stream"
   ],
-  "author": "Johan Guttormsson <johan@jgsoft.nl>",
+  "author": "Johan Guttormsson <johan@jgsoft.dev>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/johangu/node-minimp3/issues"
   },
   "homepage": "https://github.com/johangu/node-minimp3#readme",
   "dependencies": {
-    "bindings": "^1.5.0",
-    "node-addon-api": "^1.6.2"
+    "node-addon-api": "^8.9.2",
+    "node-gyp-build": "^4.8.4"
   },
   "devDependencies": {
-    "debug": "^4.1.1",
-    "eslint": "^5.15.1",
-    "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^8.0.1",
-    "eslint-plugin-promise": "^4.0.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "prettier-eslint-cli": "^4.7.1"
+    "@types/node": "^22.20.5",
+    "eslint": "^10.12.0",
+    "neostandard": "^0.14.1",
+    "node-gyp": "^13.1.0",
+    "prebuildify": "^6.0.1",
+    "typescript": "^7.0.2"
   }
 }
