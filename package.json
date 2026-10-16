@@ -40,7 +40,8 @@
     "test": "node --test test/*.test.js",
     "test:coverage": "node --test --experimental-test-coverage test/*.test.js",
     "test:types": "tsc -p test/types",
-    "test:install": "node scripts/smoke-install.js"
+    "test:install": "node scripts/smoke-install.js",
+    "release": "node scripts/release.js"
   },
   "repository": {
     "type": "git",
